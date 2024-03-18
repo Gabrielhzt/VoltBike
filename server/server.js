@@ -1,6 +1,9 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
-const port = 46312;
+const port = process.env.PORT || 3000;
+const pool = require('./database')
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
