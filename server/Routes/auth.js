@@ -32,7 +32,6 @@ router.post('/login', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
   
         if (passwordMatch) {
-          // Si l'authentification réussit, générez le jeton JWT
           const token = jwt.sign({ sub: user.id, email: user.email, name: user.name }, 'secretkey', { expiresIn: '1h' });
           return res.status(200).send({
             success: true,
@@ -40,11 +39,9 @@ router.post('/login', async (req, res) => {
             token: "Bearer " + token
           })
         } else {
-          // Si le mot de passe ne correspond pas, renvoyez une erreur 401
           res.status(401).json({ message: 'Invalid credentials' });
         }
       } else {
-        // Si l'utilisateur n'est pas trouvé, renvoyez une erreur 401
         res.status(401).json({ message: 'Invalid credentials' });
       }
     } catch (error) {
