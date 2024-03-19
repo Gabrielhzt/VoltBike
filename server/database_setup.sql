@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE TABLE IF NOT EXISTS carts (
   cart_id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(user_id),
-  total_amount NUMERIC,
+  total_amount NUMERIC DEFAULT 0,
   created_at TIMESTAMP,
-  validate INTEGER
+  validate BOOLEAN DEFAULT false
 );
 
 -- Table pour stocker les articles individuels ajoutés aux paniers

@@ -1,0 +1,274 @@
+openapi: 3.0.0
+info:
+  title: VoltBike API
+  description: API documentation for the VoltBike application
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: User registered successfully
+        '500':
+          description: Internal server error
+  /auth/login:
+    post:
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  token:
+                    type: string
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Internal server error
+  /products:
+    get:
+      summary: Get all products
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    price:
+                      type: number
+        '500':
+          description: Internal server error
+    /{productId}:
+      get:
+        summary: Get a specific product by ID
+        parameters:
+          - in: path
+            name: productId
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    price:
+                      type: number
+          '404':
+            description: Product not found
+          '500':
+            description: Internal server error
+  /user/{userId}:
+    get:
+      summary: Get user information by ID
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  email:
+                    type: string
+        '500':
+          description: Internal server error
+    put:
+      summary: Update user information
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: User information updated successfully
+        '500':
+          description: Internal server error
+  /cart:
+    get:
+      summary: Get user's cart
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    cart_id:
+                      type: integer
+                    total_amount:
+                      type: number
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new cart or validate an existing one
+      parameters:
+        - in: path
+          name: cartId
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Cart validation updated successfully
+        '201':
+          description: Cart successfully created
+        '404':
+          description: Cart not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Add a product to the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cartId:
+                  type: integer
+                productId:
+                  type: integer
+                quantity:
+                  type: integer
+      responses:
+        '200':
+          description: Product added to cart successfully
+        '500':
+          description: Internal server error
+  /wishlist:
+    get:
+      summary: Get user's wishlist
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    wishlist_id:
+                      type: integer
+                    product_id:
+                      type: integer
+        '500':
+          description: Internal server error
+    post:
+      summary: Add a product to the wishlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                productId:
+                  type: integer
+      responses:
+        '200':
+          description: Product added to wishlist successfully
+        '409':
+          description: This product is already in your wishlist
+        '500':
+          description: Internal server error
+    put:
+      summary: Remove a product from the wishlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wishlistId:
+                  type: integer
+      responses:
+        '200':
+          description: The product has been removed
+        '500':
+          description: Internal server error
