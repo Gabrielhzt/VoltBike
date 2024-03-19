@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../nav/navbar';
 import Footer from '../footer/footer';
-import './register.css'
+import './register.css';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -11,6 +11,26 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await axios.get('http://localhost:46381/auth/verify', {
+            headers: {
+              Authorization: token
+            }
+          });
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Error during authentication check:', error);
+      }
+    };
+  
+    checkAuthentication();
+  }, [navigate]);
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();

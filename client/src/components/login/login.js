@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../nav/navbar';
@@ -10,6 +10,26 @@ const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await axios.get('http://localhost:46381/auth/verify', {
+            headers: {
+              Authorization: token
+            }
+          });
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Error during authentication check:', error);
+      }
+    };
+  
+    checkAuthentication();
+  }, [navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

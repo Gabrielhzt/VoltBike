@@ -9,8 +9,11 @@ const productsRoutes = require('./Routes/products');
 const usersRoutes = require('./Routes/user');
 const cartRoutes = require('./Routes/cart');
 const wishRoutes = require('./Routes/wish');
+const passport = require("passport");
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use(passport.initialize());
 
 app.use(cors());
 

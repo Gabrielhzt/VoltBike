@@ -5,8 +5,13 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const pool = require('../database');
 const jwt = require('jsonwebtoken');
+const passport = require('passport')
 
 require('../passport/auth_jwt')
+
+router.get('/verify', passport.authenticate('jwt', { session: false }), (req, res) => {
+    res.status(200).send('Authenticated');
+});
 
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
@@ -34,7 +39,7 @@ router.post('/login', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
   
         if (passwordMatch) {
-          const token = jwt.sign({ sub: user.user_id, email: user.email, name: user.username }, process.env.SECRETKEY, { expiresIn: '1h' });
+          const token = jwt.sign({ user_id: user.user_id, email: user.email, name: user.username }, process.env.SECRETKEY, { expiresIn: '1d' });
           return res.status(200).send({
             success: true,
             message: "Logged in successfully",
