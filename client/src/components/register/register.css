@@ -1,0 +1,52 @@
+.register {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+    margin-bottom: 120px;
+}
+
+.register form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.register h2 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 50px;
+}
+
+.input {
+    border: 2px solid #52788C;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-bottom: 30px;
+    margin-top: 10px;
+    width: 400px;
+    height: 30px;
+}
+
+.input-name {
+    font-weight: 500;
+}
+
+.register button {
+    background-color: #52788C;
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 17px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.login-link {
+    color: #52788C;
+}
