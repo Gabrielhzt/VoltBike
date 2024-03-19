@@ -1,0 +1,10 @@
+.error-message {
+    background-color: rgb(255, 163, 163);
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.login {
+    margin-bottom: 40px !important;
+}

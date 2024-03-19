@@ -1,30 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../nav/navbar';
 import Footer from '../footer/footer';
-import './register.css'
+import './login.css';
 
-const Register = () => {
+const LoginForm = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     
     try {
-      const response = await axios.post('http://localhost:46381/auth/register', {
-        username: name,
+      const response = await axios.post('http://localhost:46381/auth/login', {
         email: email,
         password: password
       });
-
+      setErrorMessage('')
       console.log(response.data.message);
+      localStorage.setItem('token', response.data.token);
+      navigate('/')
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.error('Error during login:', error.response.data.message);
+      setErrorMessage(error.response.data.message);
     }
   };
 
@@ -32,22 +33,11 @@ const Register = () => {
     <div>
       <Navbar />
       <div className='register'>
-        <h2>Create account</h2>
+        <h2 className='login'>Log in</h2>
         <form onSubmit={handleSubmit}>
+        {errorMessage && <p className='error-message'>{errorMessage}</p>}
           <div>
-            <label htmlFor="name" className='input-name'>Name</label>
-            <br />
-            <input
-              type="text"
-              id="name"
-              className='input'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className='input-name'>Email address</label>
+            <label htmlFor="email" className='input-name'>Email</label>
             <br />
             <input
               type="email"
@@ -70,8 +60,8 @@ const Register = () => {
               required
             />
           </div>
-          <button type="submit">Create an account</button>
-          <p>Already have an account ? <Link to={'/login'} className='login-link'>Login</Link></p>
+          <button type="submit">Log in</button>
+          <p>New here ? <Link to={'/register'} className='login-link'>Create an account</Link></p>
         </form>
       </div>
       <Footer />
@@ -79,4 +69,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default LoginForm;

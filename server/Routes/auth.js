@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
@@ -32,7 +34,7 @@ router.post('/login', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
   
         if (passwordMatch) {
-          const token = jwt.sign({ sub: user.id, email: user.email, name: user.name }, 'secretkey', { expiresIn: '1h' });
+          const token = jwt.sign({ sub: user.user_id, email: user.email, name: user.username }, process.env.SECRETKEY, { expiresIn: '1h' });
           return res.status(200).send({
             success: true,
             message: "Logged in successfully",

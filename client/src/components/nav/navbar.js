@@ -8,7 +8,7 @@ const Navbar = () => {
     return (
         <nav className='home-nav-2'>
           <div className='home-navlink'>
-            <h1>VoltBike</h1>
+          <NavLink to={'/'} className='name'><h1>VoltBike</h1></NavLink>
             <ul>
               <li><NavLink to={"/product"} className='link'>VoltBike Pulse</NavLink></li>
               <li><NavLink to={"/product"} className='link'>VoltBike Boost</NavLink></li>
