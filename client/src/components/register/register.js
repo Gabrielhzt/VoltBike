@@ -16,7 +16,7 @@ const Register = () => {
       try {
         const token = localStorage.getItem('token');
         if (token) {
-          const response = await axios.get('http://localhost:46381/auth/verify', {
+          await axios.get('http://localhost:46381/auth/verify', {
             headers: {
               Authorization: token
             }

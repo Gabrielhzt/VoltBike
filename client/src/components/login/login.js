@@ -16,7 +16,7 @@ const LoginForm = () => {
       try {
         const token = localStorage.getItem('token');
         if (token) {
-          const response = await axios.get('http://localhost:46381/auth/verify', {
+          await axios.get('http://localhost:46381/auth/verify', {
             headers: {
               Authorization: token
             }
@@ -27,7 +27,7 @@ const LoginForm = () => {
         console.error('Error during authentication check:', error);
       }
     };
-  
+
     checkAuthentication();
   }, [navigate]);
 
@@ -39,10 +39,10 @@ const LoginForm = () => {
         email: email,
         password: password
       });
-      setErrorMessage('')
+      setErrorMessage('');
       console.log(response.data.message);
       localStorage.setItem('token', response.data.token);
-      navigate('/')
+      navigate('/');
     } catch (error) {
       console.error('Error during login:', error.response.data.message);
       setErrorMessage(error.response.data.message);
@@ -55,7 +55,7 @@ const LoginForm = () => {
       <div className='register'>
         <h2 className='login'>Log in</h2>
         <form onSubmit={handleSubmit}>
-        {errorMessage && <p className='error-message'>{errorMessage}</p>}
+          {errorMessage && <p className='error-message'>{errorMessage}</p>}
           <div>
             <label htmlFor="email" className='input-name'>Email</label>
             <br />
