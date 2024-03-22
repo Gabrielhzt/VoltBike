@@ -19,8 +19,11 @@ const Home = () => {
       });
   }, []);
 
-  const handleBuyButtonClick = (productId) => {
-    window.location.href = `/product/${productId}`;
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth" // Pour un défilement en douceur
+    });
   };
 
   return (
@@ -31,7 +34,7 @@ const Home = () => {
             <NavLink to={'/'} className='name'><h1>VoltBike</h1></NavLink>
             {products.map(product => (
               <ul key={product.product_id}>
-                <li><NavLink to={"/product"} className='link'>{product.name}</NavLink></li>
+                <li><NavLink to={`/product/${product.product_id}`} className='link'>{product.name}</NavLink></li>
               </ul>
             ))}
           </div>
@@ -52,7 +55,7 @@ const Home = () => {
             <div className='products-cart' style={{ backgroundImage: `url(${product.image_url})` }}>
               <h3>{product.name}</h3>
               <p>${product.price}</p>
-              <button onClick={() => handleBuyButtonClick(product.product_id)}>Buy it</button>
+              <Link to={`/product/${product.product_id}`} onClick={scrollToTop}><button>Buy it</button></Link>
             </div>
           </div>
         ))}
