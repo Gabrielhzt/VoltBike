@@ -79,3 +79,53 @@
     color: #547586;
     background-color: #fff;
 }
+
+/*Products*/
+
+.products-cart {
+    width: 230px; /* ou toute autre valeur souhaitée */
+    height: 340px; /* ou toute autre valeur souhaitée */
+    background-position: 10% 90%;
+    background-size: cover;
+    border-radius: 20px;
+}
+
+.products {
+    margin-top: 100px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.products-cart h3 {
+    font-size: 22px;
+    padding: 40px 25px 10px;
+}
+
+.products-cart p {
+    margin: 0px 25px 20px;
+}
+
+.products-cart button {
+    margin: 0px 25px 20px;
+    background-color: #547586;
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 15px;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.class-img {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 90px;
+}
+
+.img {
+    width: 1210px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 20px;
+}
