@@ -42,6 +42,7 @@ const Register = () => {
         password: password
       });
 
+      navigate('/login')
       console.log(response.data.message);
     } catch (error) {
       console.error('Error during registration:', error);

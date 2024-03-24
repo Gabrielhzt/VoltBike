@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../database');
+const passport = require('passport');
 
 router.get('/', (req, res) => {
     const { userId } = req.body;
@@ -65,8 +66,8 @@ router.put('/addproduct', (req, res) => {
 
 
 
-router.get('/validated', (req, res) => {
-    const { userId } = req.body;
+router.get('/validated', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const userId = req.user.user_id; // Corrected user_id extraction
 
     pool.query(`
         SELECT 
@@ -74,6 +75,7 @@ router.get('/validated', (req, res) => {
             c.total_amount, 
             ci.product_id, 
             ci.quantity, 
+            p.image_1,
             p.name, 
             p.price 
         FROM 
@@ -88,14 +90,11 @@ router.get('/validated', (req, res) => {
             console.error('Error retrieving validated carts:', error);
             res.status(500).send('Error retrieving validated carts');
         } else {
-            // Créer une structure de données pour stocker les paniers et les produits correspondants
             const validatedCarts = {};
 
-            // Parcourir les résultats pour regrouper les produits par panier
             result.rows.forEach(row => {
-                const { cart_id, total_amount, product_id, quantity, name, price } = row;
+                const { cart_id, total_amount, product_id, quantity, name, price, image_1 } = row; // Include image_url in destructuring
 
-                // Si le panier n'existe pas encore dans validatedCarts, initialisez-le
                 if (!validatedCarts[cart_id]) {
                     validatedCarts[cart_id] = {
                         cart_id,
@@ -104,20 +103,20 @@ router.get('/validated', (req, res) => {
                     };
                 }
 
-                // Ajoutez le produit au panier correspondant
                 validatedCarts[cart_id].products.push({
                     product_id,
+                    image_1,
                     name,
                     quantity,
                     price
                 });
             });
 
-            // Envoyer les paniers validés avec les produits correspondants
             res.send(Object.values(validatedCarts));
         }
     });
 });
+
 
 
 module.exports = router;

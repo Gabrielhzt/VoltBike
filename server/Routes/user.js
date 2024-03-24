@@ -16,7 +16,7 @@ router.get('/profile', passport.authenticate('jwt', { session: false }), (req, r
     })
 });
 
-router.put('/update', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.put('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
     const userId = req.user.user_id; // Récupérer l'ID de l'utilisateur à partir de req.user
     const { username, email } = req.body;
 

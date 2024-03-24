@@ -39,9 +39,13 @@ const LoginForm = () => {
         email: email,
         password: password
       });
+
+      // Extraire le token JWT de la réponse et le stocker dans le localStorage
+      const token = response.data.token;
+      localStorage.setItem('token', token);
+
       setErrorMessage('');
       console.log(response.data.message);
-      localStorage.setItem('token', response.data.token);
       navigate('/');
     } catch (error) {
       console.error('Error during login:', error.response.data.message);
