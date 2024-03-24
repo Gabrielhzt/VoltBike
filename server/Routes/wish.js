@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../database');
-const { error } = require('console');
+const passport = require('passport');
 
 router.get('/', (req, res) => {
     const { userId } = req.body;
@@ -16,8 +16,27 @@ router.get('/', (req, res) => {
     })
 })
 
-router.post('/add', (req, res) => {
-    const { userId, productId } = req.body;
+router.get('/check', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { productId } = req.query;
+    const userId = req.user.user_id;
+
+    pool.query('SELECT * FROM wishlists WHERE user_id = $1 AND product_id = $2', [userId, productId], (error, result) => {
+        if(error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+            if (result.rows.length > 0) {
+                res.json({ isInWishlist: true });
+            } else {
+                res.json({ isInWishlist: false });
+            }
+        }
+    });
+});
+
+
+router.post('/add', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { productId } = req.body;
+    const userId = req.user.user_id;
 
     pool.query('SELECT * FROM wishlists WHERE user_id = $1 AND product_id = $2', [userId, productId], (error, result) => {
         if (error) {
@@ -40,10 +59,11 @@ router.post('/add', (req, res) => {
     });
 });
 
-router.put('/remove', (req, res) => {
-    const { wishlistId } = req.body;
+router.put('/remove', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { productId } = req.body;
+    const userId = req.user.user_id;
 
-    pool.query('DELETE FROM wishlists WHERE wishlist_id = $1', [wishlistId], (error, result) => {
+    pool.query('DELETE FROM wishlists WHERE user_id = $1 AND product_id = $2', [userId, productId], (error, result) => {
         if (error) {
             console.log(error);
             res.status(500).send('ERROR');

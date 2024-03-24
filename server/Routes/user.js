@@ -17,7 +17,7 @@ router.get('/profile', passport.authenticate('jwt', { session: false }), (req, r
 });
 
 router.put('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const userId = req.user.user_id; // Récupérer l'ID de l'utilisateur à partir de req.user
+    const userId = req.user.user_id;
     const { username, email } = req.body;
 
     pool.query('UPDATE users SET username = $1, email = $2 WHERE user_id = $3', [username, email, userId], (error, result) => {

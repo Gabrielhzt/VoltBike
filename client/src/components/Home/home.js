@@ -22,7 +22,7 @@ const Home = () => {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth" // Pour un défilement en douceur
+      behavior: "smooth"
     });
   };
 
@@ -40,7 +40,7 @@ const Home = () => {
           </div>
           <div className='icon'>
             <NavLink to={"./cart"}><FontAwesomeIcon icon={faCartShopping} size='xl' style={{ color: "#ffffff" }} /></NavLink>
-            <NavLink to={"./account"}><FontAwesomeIcon icon={faCircleUser} size='xl' style={{ color: "#ffffff" }} /></NavLink>
+            <NavLink to={"./account/personal-information"}><FontAwesomeIcon icon={faCircleUser} size='xl' style={{ color: "#ffffff" }} /></NavLink>
           </div>
         </nav>
         <div className='home-title'>
