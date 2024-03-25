@@ -66,8 +66,8 @@ router.put('/addproduct', (req, res) => {
 
 
 
-router.get('/validated', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const userId = req.user.user_id; // Corrected user_id extraction
+router.get('/validated', (req, res) => {
+    const userId = req.user.user_id;
 
     pool.query(`
         SELECT 

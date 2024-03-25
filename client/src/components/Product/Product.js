@@ -6,6 +6,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './product.css';
 
 const Product = () => {
+  const navigate = useNavigate();
+
   const { productId } = useParams();
   const [product, setProduct] = useState({});
   const [wishlistStatus, setWishlistStatus] = useState('');
@@ -22,7 +24,7 @@ const Product = () => {
         });
         setIsInWishlist(response.data.isInWishlist);
       } catch (error) {
-        console.error('Error checking wishlist status:', error);
+        
       }
     };
 
@@ -34,7 +36,7 @@ const Product = () => {
         console.error('Error retrieving product details:', error);
       });
 
-    checkWishlistStatus(); // Appeler la fonction pour vérifier le statut de la wishlist
+    checkWishlistStatus();
 
   }, [productId]);
 
@@ -49,10 +51,9 @@ const Product = () => {
         }
       });
       setWishlistStatus(response.data);
-      setIsInWishlist(true); // Mettre à jour l'état pour indiquer que le produit est dans la wishlist
+      setIsInWishlist(true);
     } catch (error) {
-      console.error('Error adding product to wishlist:', error);
-      setWishlistStatus('Error adding product to wishlist. Please try again later.');
+      navigate('/login');
     }
   };
 

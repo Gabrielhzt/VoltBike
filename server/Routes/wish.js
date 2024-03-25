@@ -4,9 +4,9 @@ const pool = require('../database');
 const passport = require('passport');
 
 router.get('/', (req, res) => {
-    const { userId } = req.body;
+    const userId = req.user.user_id;
 
-    pool.query('SELECT * FROM wishlists where user_id = $1', [userId], (error, result) => {
+    pool.query('SELECT w.product_id, p.name, p.price, p.image_url FROM wishlists w INNER JOIN products p ON w.product_id = p.product_id   WHERE user_id = $1', [userId], (error, result) => {
         if(error) {
             console.error(error)
             res.status(500).send('Error')
@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
     })
 })
 
-router.get('/check', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/check', (req, res) => {
     const { productId } = req.query;
     const userId = req.user.user_id;
 
@@ -34,7 +34,7 @@ router.get('/check', passport.authenticate('jwt', { session: false }), (req, res
 });
 
 
-router.post('/add', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.post('/add', (req, res) => {
     const { productId } = req.body;
     const userId = req.user.user_id;
 
@@ -59,7 +59,7 @@ router.post('/add', passport.authenticate('jwt', { session: false }), (req, res)
     });
 });
 
-router.put('/remove', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.put('/remove', (req, res) => {
     const { productId } = req.body;
     const userId = req.user.user_id;
 

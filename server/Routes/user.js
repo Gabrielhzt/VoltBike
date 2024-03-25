@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../database');
-const passport = require('passport');
+const LocalStorage = require('node-localstorage').LocalStorage;
+const localStorage = new LocalStorage('./scratch');
 
-router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/profile', (req, res) => {
     const userId = req.user.user_id;
 
     pool.query('SELECT username, email FROM users WHERE user_id = $1', [userId], (error, result) => {
@@ -16,7 +17,7 @@ router.get('/profile', passport.authenticate('jwt', { session: false }), (req, r
     })
 });
 
-router.put('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.put('/profile', (req, res) => {
     const userId = req.user.user_id;
     const { username, email } = req.body;
 
@@ -29,6 +30,17 @@ router.put('/profile', passport.authenticate('jwt', { session: false }), (req, r
         }
     });
 });
+
+router.post('/logout', (req, res) => {
+    // Clear the JWT token from local storage
+    res.clearCookie('token'); // If using cookies
+    localStorage.removeItem('token'); // If using local storage
+
+    // Respond with a success message
+    res.status(200).json({ message: 'Logout successful' });
+});
+
+
 
 
 module.exports = router;
