@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../database');
 const passport = require('passport');
+const { error } = require('console');
 
 router.get('/', (req, res) => {
     const { userId } = req.body;
@@ -43,26 +44,53 @@ router.post('/:cartId', (req, res) => {
 });
 
 router.put('/addproduct', (req, res) => {
-    const { cartId, productId, quantity } = req.body;
+    const { productId, quantity } = req.body;
+    const userId = req.user.user_id;
 
-    pool.query('UPDATE cart_items SET quantity = $1 WHERE cart_id = $2 AND product_id = $3', [quantity, cartId, productId], (error, result) => {
+    pool.query('SELECT cart_id FROM carts WHERE user_id = $1 AND validate = false', [userId], (error, result) => {
         if(error) {
-            console.error(error)
-            res.status(500).send('Error')
-        }else if(result.rowCount > 0) {
-            res.send(result)
-        }else {
-            pool.query('INSERT INTO cart_items (cart_id, product_id, quantity) VALUES ($1, $2, $3)', [cartId, productId, quantity], (error, result) => {
+            console.error(error);
+            res.status(500).send('Error');
+        } else if (result.rowCount > 0) {
+            const cartId = result.rows[0].cart_id; 
+            console.log(cartId)
+
+            pool.query('UPDATE cart_items SET quantity = $1 WHERE cart_id = $2 AND product_id = $3', [quantity, cartId, productId], (error, result) => {
                 if(error) {
-                    console.error(error)
-                    res.status(500).send('Error')
-                }else {
-                    res.send('Product added')
+                    console.error(error);
+                    res.status(500).send('Error');
+                } else if (result.rowCount === 0) {
+                    pool.query('INSERT INTO cart_items (cart_id, product_id, quantity) VALUES ($1, $2, $3)', [cartId, productId, quantity], (error, result) => {
+                        if(error) {
+                            console.error(error);
+                            res.status(500).send('Error');
+                        } else {
+                            res.send(result);
+                        }
+                    });
                 }
-            })
+            });
+        } else {
+            pool.query('INSERT INTO carts (user_id) VALUES ($1) RETURNING cart_id', [userId], (error, result) => {
+                if(error) {
+                    console.error(error);
+                    res.status(500).send('Error');
+                } else {
+                    const cartId = result.rows[0].cart_id;
+
+                    pool.query('INSERT INTO cart_items (cart_id, product_id, quantity) VALUES ($1, $2, $3)', [cartId, productId, quantity], (error, result) => {
+                        if(error) {
+                            console.error(error);
+                            res.status(500).send('Error');
+                        } else {
+                            res.send(result);
+                        }
+                    });
+                }
+            });
         }
-    })
-})
+    });
+});
 
 
 

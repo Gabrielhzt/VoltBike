@@ -32,11 +32,9 @@ router.put('/profile', (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-    // Clear the JWT token from local storage
-    res.clearCookie('token'); // If using cookies
-    localStorage.removeItem('token'); // If using local storage
+    res.clearCookie('token');
+    localStorage.removeItem('token');
 
-    // Respond with a success message
     res.status(200).json({ message: 'Logout successful' });
 });
 
