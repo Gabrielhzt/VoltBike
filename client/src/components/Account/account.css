@@ -34,3 +34,11 @@
     grid-area: info;
 }
 
+.logout {
+    background-color: red;
+    color: #fff;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+}

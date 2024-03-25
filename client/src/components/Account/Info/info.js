@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './info.css';
+import { useNavigate } from "react-router-dom";
 
 const Info = () => {
+    const navigate = useNavigate();
     const [profile, setProfile] = useState({});
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -25,7 +27,7 @@ const Info = () => {
             setUsername(response.data.username);
             setEmail(response.data.email);
         } catch (error) {
-            console.log('Error fetching profile:', error);
+            navigate('/register')
         }
     };
 
@@ -45,7 +47,6 @@ const Info = () => {
             setUpdate(false);
         } catch (error) {
             setMessage('Error updating user information');
-            console.log('Error updating user:', error);
         }
     };
 

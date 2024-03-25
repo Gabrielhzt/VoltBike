@@ -1,17 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../database');
-const passport = require('passport');
-const { error } = require('console');
 
 router.get('/', (req, res) => {
-    const { userId } = req.body;
-
-    pool.query('SELECT * FROM carts WHERE user_id = $1 AND validate = false', [userId], (error, result) => {
+    const userId = req.user.user_id;
+    pool.query('SELECT c.cart_id, c.total_amount, ci.cart_item_id, ci.product_id, ci.quantity, p.name, p.price, p.image_1 FROM carts c INNER JOIN cart_items ci ON c.cart_id = ci.cart_id INNER JOIN products p ON ci.product_id = p.product_id WHERE user_id = $1 AND validate = false', [userId], (error, result) => {
         if (error) {
             console.error('Error retrieving cart:', error);
             res.status(500).send('Error retrieving cart');
         } else if (result.rows.length > 0) {
+            console.log(result)
             res.send(result.rows);
         } else {
             pool.query('INSERT INTO carts (user_id) VALUES ($1)', [userId], (insertError, insertResult) => {
@@ -88,6 +86,46 @@ router.put('/addproduct', (req, res) => {
                     });
                 }
             });
+        }
+    });
+});
+
+router.delete('/remove', (req, res) => {
+    const cartItemId = req.body.cartItemId;
+    const userId = req.user.user_id;
+
+    pool.query('DELETE FROM cart_items WHERE cart_item_id = $1', [cartItemId], (error, result) => {
+        if(error) {
+            console.error(error);
+            res.status(500).send('Error');
+        } else {
+            res.send('Deleted');
+        }
+    });
+});
+
+router.put('/quantity', (req, res) => {
+    const { cartItemId, quantity } = req.body;
+
+    pool.query('UPDATE cart_items SET quantity = $1 WHERE cart_item_id = $2', [quantity, cartItemId], (error, result) => {
+        if(error) {
+            console.error(error);
+            res.status(500).send('Error');
+        } else {
+            res.send('Updated');
+        }
+    });
+});
+
+router.put('/total', (req, res) => {
+    const { cartId, totalAmount } = req.body;
+
+    pool.query('UPDATE carts SET total_amount = $1 WHERE cart_id = $2', [totalAmount, cartId], (error, result) => {
+        if(error) {
+            console.error(error);
+            res.status(500).send('Error');
+        } else {
+            res.send('Updated');
         }
     });
 });

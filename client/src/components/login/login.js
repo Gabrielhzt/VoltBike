@@ -21,7 +21,7 @@ const LoginForm = () => {
               Authorization: token
             }
           });
-          navigate('/');
+          navigate('/account/personal-information');
         }
       } catch (error) {
         console.error('Error during authentication check:', error);

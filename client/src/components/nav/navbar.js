@@ -30,7 +30,7 @@ const Navbar = () => {
           </div>
           <div className='icon'>
             <NavLink to={"/cart"}><FontAwesomeIcon icon={faCartShopping} size='xl' style={{color: "#ffffff",}} /></NavLink>
-            <NavLink to={"/account/personal-information"}><FontAwesomeIcon icon={faCircleUser} size='xl' style={{color: "#ffffff",}} /></NavLink>
+            <NavLink to={"/register"}><FontAwesomeIcon icon={faCircleUser} size='xl' style={{color: "#ffffff",}} /></NavLink>
           </div>
         </nav>
     )

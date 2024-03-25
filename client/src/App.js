@@ -4,7 +4,7 @@ import './App.css';
 
 import Home from './components/Home/home';
 import Product from './components/Product/Product';
-import Cart from './components/cart';
+import Cart from './components/Cart/cart';
 import Login from './components/login/login';
 import Register from './components/register/register';
 import Account from './components/Account/account';

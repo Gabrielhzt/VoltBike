@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './order.css';
+import { useNavigate } from "react-router-dom";
 
 const Order = () => {
+    const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
@@ -19,11 +21,9 @@ const Order = () => {
             });
             setOrders(response.data);
         } catch (error) {
-            console.log('Error fetching orders:', error);
+            navigate('/register')
         }
     };
-
-    console.log(orders)
 
     return (
         <div>

@@ -16,8 +16,8 @@ const Account = () => {
                 Authorization: token
             }
         });
-        localStorage.removeItem('token'); // Supprimez également le jeton côté client
-        navigate('/login'); // Redirigez vers la page de connexion après la déconnexion
+        localStorage.removeItem('token');
+        navigate('/login');
     } catch (error) {
         console.error('Error during logout:', error);
     }
@@ -37,7 +37,7 @@ const Account = () => {
           <NavLink to="/account/wishlist">
             Wishlist
           </NavLink>
-          <button onClick={handleLogout}>Logout</button>
+          <button className='logout' onClick={handleLogout}>Logout</button>
         </div>
         <div className='page-info'>
           <Outlet />

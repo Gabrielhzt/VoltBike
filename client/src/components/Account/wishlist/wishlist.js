@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import './wishlist.css'
 
 const Wishlist = () => {
+    const navigate = useNavigate();
     const [wishlist, setWishlist] = useState([]);
 
     useEffect(() => {
@@ -27,9 +28,8 @@ const Wishlist = () => {
             });
             setWishlist(response.data);
 
-            console.log(response.data)
         } catch (error) {
-            console.log(error);
+            navigate('/register')
         }
     };
 

@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../database');
 
 router.get('/', (req, res) => {
-    pool.query('SELECT product_id,name, price, image_url FROM products', (error, result) => {
+    pool.query('SELECT product_id, name, price, image_url FROM products', (error, result) => {
         if (error) {
             console.error('Error retrieving products:', error);
             res.status(500).send('Error retrieving products');

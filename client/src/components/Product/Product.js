@@ -75,6 +75,23 @@ const Product = () => {
     }
   };
 
+  const addToCart = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put('http://localhost:46381/cart/addproduct', {
+        productId: productId,
+        quantity: 1
+      }, {
+        headers: {
+          Authorization: token
+        }
+      });
+      navigate('/cart');
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+  };
+
   return (
     <div>
       <Navbar />
@@ -91,14 +108,13 @@ const Product = () => {
             <h3 className='color'>Price:</h3>
             <p className='price'>${product.price}</p>
             <div className='separation'>
-              <button className='add'>Add to cart</button>
-              {isInWishlist ? ( // Afficher le bouton "Remove from Wishlist" si le produit est dans la wishlist
+              <button className='add' onClick={addToCart}>Add to cart</button>
+              {isInWishlist ? (
                 <button className='wishlist-btn' onClick={removeFromWishlist}>Remove from Wishlist</button>
               ) : (
                 <button className='wishlist-btn' onClick={addToWishlist}>Add to Wishlist</button>
               )}
             </div>
-            {wishlistStatus && <p className="wishlist-status">{wishlistStatus}</p>}
           </div>
         </div>
       </section>
