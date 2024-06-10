@@ -10,7 +10,6 @@ opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.SECRETKEY;
 
 passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
-    console.log(jwt_payload)
     
     try {
         const result = await pool.query('SELECT * FROM users WHERE user_id = $1', [jwt_payload.user_id]);

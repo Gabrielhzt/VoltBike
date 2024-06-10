@@ -1,11 +1,16 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const cors = require('cors');
+const port = 4000;
 const authRoutes = require('./Routes/auth');
 const productsRoutes = require('./Routes/products');
 const usersRoutes = require('./Routes/user');
 const ordersRoutes = require('./Routes/orders');
 const passport = require('passport');
+
+app.use(cors({
+    origin: 'http://localhost:3000'
+}));
 
 app.use(express.json());
 app.use(passport.initialize());
