@@ -21,7 +21,7 @@ CREATE TABLE products (
     product_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    img BYTEA,
+    img VARCHAR(255),
     product_img VARCHAR(255),
     price NUMERIC(10, 2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

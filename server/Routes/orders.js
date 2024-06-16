@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
                     console.error('Error creating cart:', insertError);
                     res.status(500).send('Error creating cart');
                 } else {
-                    pool.query('SELECT o.orders_id, o.total, od.order_detail_id, od.product_id, od.quantity, p.name, p.price, p.product_img FROM orders o INNER JOIN orders_detail od ON o.order_id = od.order_id INNER JOIN products p ON od.product_id = p.product_id WHERE user_id = $1 AND close = false', [userId], (error, result) => {
+                    pool.query('SELECT o.order_id, o.total, od.order_detail_id, od.product_id, od.quantity, p.name, p.price, p.product_img FROM orders o INNER JOIN orders_detail od ON o.order_id = od.order_id INNER JOIN products p ON od.product_id = p.product_id WHERE user_id = $1 AND close = false', [userId], (error, result) => {
                         if(error) {
                             console.error('Error retrieving cart:', error);
                             res.status(500).send('Error retrieving cart');
@@ -113,9 +113,9 @@ router.put('/addproduct', (req, res) => {
 });
 
 router.delete('/remove', (req, res) => {
-    const orderDetailId = req.body.order_detail_id;
+    const { order_detail_id } = req.body;
 
-    pool.query('DELETE FROM orders_detail WHERE order_detail_id = $1', [orderDetailId], (error, result) => {
+    pool.query('DELETE FROM orders_detail WHERE order_detail_id = $1', [order_detail_id], (error, result) => {
         if(error) {
             console.error(error);
             res.status(500).send('Error');
@@ -126,32 +126,46 @@ router.delete('/remove', (req, res) => {
 });
 
 router.put('/quantity', (req, res) => {
-    const { orderDetailId, quantity } = req.body;
+    const { orderDetailId, quantity, orderId } = req.body;
 
-    pool.query('UPDATE orders_detail SET quantity = $1 WHERE orders_detail_id = $2', [quantity, orderDetailId], (error, result) => {
+    pool.query('UPDATE orders_detail SET quantity = $1 WHERE order_detail_id = $2', [quantity, orderDetailId], (error, result) => {
         if(error) {
             console.error(error);
             res.status(500).send('Error');
         } else {
-            res.send('Updated');
+            pool.query('SELECT product_id, quantity FROM orders_detail WHERE order_id = $1', [orderId], (error, result) => {
+                if(error) {
+                    console.error(error)
+                    res.status(500).useChunkedEncodingByDefault('Error')
+                }else {
+                    res.send(result.rows)
+                }
+            })
         }
     });
 });
 
 router.put('/total', (req, res) => {
-    const { orderId, total } = req.body;
+    const { orderId } = req.body;
 
-    pool.query('UPDATE orders SET total = $1 WHERE order_id = $2', [total, orderId], (error, result) => {
-        if(error) {
+    pool.query('SELECT SUM(quantity * price) AS total FROM orders_detail WHERE order_id = $1;', [orderId], (error, result) => {
+        if (error) {
             console.error(error);
-            res.status(500).send('Error');
+            res.status(500).send('Error calculating total');
         } else {
-            res.send('Updated');
+            const total = result.rows[0].total;
+
+            pool.query('UPDATE orders SET total = $1 WHERE order_id = $2;', [total, orderId], (error, result) => {
+                if (error) {
+                    console.error(error);
+                    res.status(500).send('Error updating total');
+                } else {
+                    res.send({ total });
+                }
+            });
         }
     });
 });
-
-
 
 router.get('/validated', (req, res) => {
     const userId = req.user.user_id;
@@ -180,7 +194,7 @@ router.get('/validated', (req, res) => {
             const validatedCarts = {};
 
             result.rows.forEach(row => {
-                const { cart_id, total_amount, product_id, quantity, name, price, image_1 } = row; // Include image_url in destructuring
+                const { cart_id, total_amount, product_id, quantity, name, price, image_1 } = row;
 
                 if (!validatedCarts[cart_id]) {
                     validatedCarts[cart_id] = {
@@ -203,5 +217,20 @@ router.get('/validated', (req, res) => {
         }
     });
 });
+
+router.get('/totalItems', (req, res) => {
+    const { orderId } = req.query;
+
+    pool.query('SELECT SUM(quantity) AS total_item FROM orders_detail WHERE order_id = $1;', [orderId], (error, result) => {
+        if (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error retrieving total items' });
+        } else {
+            const totalItem = result.rows[0]?.total_item || 0;
+            res.json({ totalItem: totalItem.toString() });
+        }
+    });
+});
+
 
 module.exports = router;
