@@ -43,7 +43,8 @@ router.post('/validate', (req, res) => {
 
     pool.query('SELECT order_id FROM orders WHERE user_id = $1 AND close = false', [userId], (error, result) => {
         if(error) {
-            console.log(error)
+            console.error(error)
+            res.status(500).send('Error');
         }else {
             const orderId = result.rows[0].order_id
             pool.query('UPDATE orders SET close = true WHERE order_id = $1', [orderId], (error, result) => {
