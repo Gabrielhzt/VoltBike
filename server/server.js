@@ -13,9 +13,7 @@ const paymentRoutes = require('./Routes/stripe');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 
-app.use(cors({
-    origin: 'https://voltbike.vercel.app'
-}));
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(express.json());
