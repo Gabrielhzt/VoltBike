@@ -171,13 +171,15 @@ router.put('/total', (req, res) => {
 router.get('/validated', (req, res) => {
     const userId = req.user.user_id;
 
-    pool.query(`
+    pool.query(
+        `
         SELECT 
             o.order_id, 
-            o.total, 
+            o.total AS total_amount, 
+            o.created_at,
             od.product_id, 
             od.quantity, 
-            p.product_img,
+            p.product_img AS image_url,
             p.name, 
             p.price 
         FROM 
@@ -187,36 +189,40 @@ router.get('/validated', (req, res) => {
         WHERE 
             o.close = true
             AND o.user_id = $1
-    `, [userId] , (error, result) => {
-        if (error) {
-            console.error('Error retrieving validated carts:', error);
-            res.status(500).send('Error retrieving validated carts');
-        } else {
-            const validatedCarts = {};
+        `,
+        [userId],
+        (error, result) => {
+            if (error) {
+                console.error('Error retrieving validated carts:', error);
+                res.status(500).send('Error retrieving validated carts');
+            } else {
+                const validatedCarts = {};
 
-            result.rows.forEach(row => {
-                const { cart_id, total_amount, product_id, quantity, name, price, image_1 } = row;
+                result.rows.forEach(row => {
+                    const { order_id, created_at, total_amount, product_id, quantity, name, price, image_url } = row;
 
-                if (!validatedCarts[cart_id]) {
-                    validatedCarts[cart_id] = {
-                        cart_id,
-                        total_amount,
-                        products: []
-                    };
-                }
+                    if (!validatedCarts[order_id]) {
+                        validatedCarts[order_id] = {
+                            order_id,
+                            total_amount,
+                            created_at,
+                            products: []
+                        };
+                    }
 
-                validatedCarts[cart_id].products.push({
-                    product_id,
-                    image_1,
-                    name,
-                    quantity,
-                    price
+                    validatedCarts[order_id].products.push({
+                        product_id,
+                        image_url,
+                        name,
+                        quantity,
+                        price
+                    });
                 });
-            });
 
-            res.send(Object.values(validatedCarts));
+                res.json(Object.values(validatedCarts));
+            }
         }
-    });
+    );
 });
 
 router.get('/totalItems', (req, res) => {

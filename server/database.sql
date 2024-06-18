@@ -36,6 +36,14 @@ CREATE TABLE orders_detail (
     price NUMERIC(10, 2) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS wishlists (
+  wishlist_id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(user_id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  product_id INTEGER REFERENCES products(product_id),
+  UNIQUE(user_id, product_id)
+);
+
 
 INSERT INTO products (name, description, img, product_img, price) 
 VALUES

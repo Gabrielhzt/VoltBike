@@ -5,7 +5,7 @@ const pool = require('../database');
 router.get('/', (req, res) => {
     const userId = req.user.user_id;
 
-    pool.query('SELECT w.product_id, p.name, p.price, p.image_url FROM wishlists w INNER JOIN products p ON w.product_id = p.product_id   WHERE user_id = $1', [userId], (error, result) => {
+    pool.query('SELECT w.product_id, p.name, p.price, p.img FROM wishlists w INNER JOIN products p ON w.product_id = p.product_id   WHERE user_id = $1', [userId], (error, result) => {
         if(error) {
             console.error(error)
             res.status(500).send('Error')
