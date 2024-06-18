@@ -13,7 +13,13 @@ const paymentRoutes = require('./Routes/stripe');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 
-app.use(cors());
+const corsOptions = {
+    origin: 'https://voltbike.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 app.use(express.json());
