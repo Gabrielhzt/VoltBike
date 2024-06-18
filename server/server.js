@@ -1,7 +1,9 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const port = 4000;
+const port =  4000;
 const authRoutes = require('./Routes/auth');
 const productsRoutes = require('./Routes/products');
 const usersRoutes = require('./Routes/user');
@@ -12,7 +14,7 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: 'https://voltbike.vercel.app'
 }));
 
 app.use(bodyParser.json());
